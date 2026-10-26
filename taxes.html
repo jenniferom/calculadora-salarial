@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Salario Neto - Cuba 2026</title>
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  body {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .contenedor {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    padding: 40px;
+    max-width: 900px;
+    width: 100%;
+    animation: aparecer 0.5s ease;
+  }
+
+  @keyframes aparecer {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  h1 {
+    color: #1e3c72;
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  .subtitulo {
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.95rem;
+    margin-bottom: 30px;
+  }
+
+  .formulario {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+  }
+
+  input[type="number"] {
+    flex: 1;
+    min-width: 200px;
+    padding: 14px 18px;
+    font-size: 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  input[type="number"]:focus {
+    border-color: #2a5298;
+    box-shadow: 0 0 0 4px rgba(42, 82, 152, 0.15);
+  }
+
+  button {
+    padding: 14px 28px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.2s;
+  }
+
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(30, 60, 114, 0.35);
+  }
+
+  button:active {
+    transform: translateY(0);
+  }
+
+  .oculto {
+    display: none;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 0.92rem;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+
+  thead {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: #ffffff;
+  }
+
+  th {
+    padding: 14px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  th.num, td.num {
+    text-align: right;
+  }
+
+  td {
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #374151;
+  }
+
+  tbody tr:hover {
+    background: #f8fafc;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .fila-total {
+    background: #fef3c7 !important;
+    font-weight: 700;
+    color: #92400e;
+  }
+
+  .fila-total td {
+    border-top: 2px solid #f59e0b;
+    border-bottom: 2px solid #f59e0b;
+    color: #92400e;
+  }
+
+  .fila-neto {
+    background: #d1fae5 !important;
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+
+  .fila-neto td {
+    color: #065f46;
+    padding: 16px 12px;
+  }
+
+  .fila-porcentil {
+    background: #b45e5857 !important;
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+
+  .fila-porcentil td {
+    color: #e42d0d;
+    padding: 16px 12px;
+  }
+
+  .leyenda {
+    background: #f1f5f9;
+    border-left: 4px solid #2a5298;
+    padding: 16px 20px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    color: #475569;
+    line-height: 1.7;
+  }
+
+  .leyenda strong {
+    color: #1e3c72;
+  }
+
+  .resumen-final {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 1.1rem;
+    color: #1e3c72;
+  }
+
+  .resumen-final .monto {
+    display: inline-block;
+    background: linear-gradient(135deg, #059669, #10b981);
+    color: #fff;
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-left: 8px;
+    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4);
+  }
+
+  @media (max-width: 600px) {
+    .contenedor { padding: 24px; }
+    h1 { font-size: 1.4rem; }
+    table { font-size: 0.8rem; }
+    th, td { padding: 8px 6px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="contenedor">
+  <h1>💰 Calculadora de Salario Neto</h1>
+  <p class="subtitulo">Cuba · Régimen general · 2026</p>
+
+  <div class="formulario">
+    <input type="number" id="bruto" placeholder="Ingrese el salario bruto mensual (CUP)" min="0" step="0.01">
+    <button onclick="calcular()">Calcular</button>
+  </div>
+
+  <div id="resultado" class="oculto">
+    <table>
+      <thead>
+        <tr>
+          <th>Concepto</th>
+          <th class="num">Base (CUP)</th>
+          <th class="num">Tasa</th>
+          <th class="num">Importe (CUP)</th>
+        </tr>
+      </thead>
+      <tbody id="cuerpo-tabla"></tbody>
+    </table>
+
+    <div class="leyenda">
+      <strong>📖 Leyenda:</strong><br>
+      <strong>CESS</strong> = Contribución Especial a la Seguridad Social<br>
+      <strong>ISIP</strong> = Impuesto sobre los Ingresos Personales
+    </div>
+
+    <div class="resumen-final">
+      Salario neto a recibir:
+      <span class="monto" id="neto-final">0.00 CUP</span>
+    </div>
+  </div>
+</div>
+
+<script>
+function formatear(numero) {
+  return numero.toLocaleString('es-CU', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+function calcularSalarioNeto(bruto) {
+  // ---------- 1. CESS ----------
+  let cess, detalleCess;
+  if (bruto <= 15000) {
+    cess = bruto * 0.05;
+    detalleCess = [
+      { concepto: "CESS 5% hasta 15,000", base: bruto, tasa: 0.05, importe: cess }
+    ];
+  } else {
+    const cessBase = 15000 * 0.05;
+    const exceso = bruto - 15000;
+    const cessExceso = exceso * 0.10;
+    cess = cessBase + cessExceso;
+    detalleCess = [
+      { concepto: "CESS 5% hasta 15,000", base: 15000, tasa: 0.05, importe: cessBase },
+      { concepto: "CESS 10% sobre exceso", base: exceso, tasa: 0.10, importe: cessExceso }
+    ];
+  }
+
+  // ---------- 2. ISIP por tramos ----------
+  const tramos = [
+    [0, 3260, 0.00],
+    [3260, 9510, 0.03],
+    [9510, 15000, 0.05],
+    [15000, 20000, 0.075],
+    [20000, 25000, 0.10],
+    [25000, 30000, 0.15],
+    [30000, Infinity, 0.20]
+  ];
+
+  let isip = 0;
+  const detalleIsip = [];
+  for (const [inf, sup, tasa] of tramos) {
+    if (bruto > inf) {
+      const base = Math.min(bruto, sup) - inf;
+      const impuesto = base * tasa;
+      isip += impuesto;
+      const rango = sup === Infinity
+        ? `${formatear(inf)}–∞`
+        : `${formatear(inf)}–${formatear(sup)}`;
+      detalleIsip.push({
+        concepto: `ISIP ${(tasa * 100).toFixed(1)}% (${rango})`,
+        base: base,
+        tasa: tasa,
+        importe: impuesto
+      });
+    }
+  }
+
+  // ---------- 3. Totales ----------
+  const totalDescuentos = cess + isip;
+  const neto = bruto - totalDescuentos;
+  const porcentil = totalDescuentos * 100 / bruto;
+
+  return { neto, totalDescuentos, porcentil, detalleCess, detalleIsip };
+}
+
+function calcular() {
+  const input = document.getElementById('bruto');
+  const bruto = parseFloat(input.value);
+
+  if (isNaN(bruto) || bruto < 0) {
+    alert("Por favor, ingrese un salario bruto válido (número mayor o igual a 0).");
+    return;
+  }
+
+  const { neto, totalDescuentos, porcentil, detalleCess, detalleIsip } = calcularSalarioNeto(bruto);
+
+  const tbody = document.getElementById('cuerpo-tabla');
+  tbody.innerHTML = '';
+
+  const filas = [...detalleCess, ...detalleIsip];
+
+  // Filas de detalle
+  for (const fila of filas) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${fila.concepto}</td>
+      <td class="num">${formatear(fila.base)}</td>
+      <td class="num">${(fila.tasa * 100).toFixed(1)}%</td>
+      <td class="num">${formatear(fila.importe)}</td>
+    `;
+    tbody.appendChild(tr);
+  }
+
+  // Fila de total descuentos
+  const trTotal = document.createElement('tr');
+  trTotal.className = 'fila-total';
+  trTotal.innerHTML = `
+    <td colspan="3">TOTAL DESCUENTOS</td>
+    <td class="num">${formatear(totalDescuentos)}</td>
+  `;
+  tbody.appendChild(trTotal);
+
+  // Fila de salario neto
+  const trNeto = document.createElement('tr');
+  trNeto.className = 'fila-neto';
+  trNeto.innerHTML = `
+    <td colspan="3">SALARIO NETO</td>
+    <td class="num">${formatear(neto)}</td>
+  `;
+  tbody.appendChild(trNeto);
+
+  // Fila de % REAL
+  const trPorcentil = document.createElement('tr');
+  trPorcentil.className = 'fila-porcentil';
+  trPorcentil.innerHTML = `
+    <td colspan="3">% DESCUENTO REAL</td>
+    <td class="num">${formatear(porcentil) + '%'}</td>
+  `;
+  tbody.appendChild(trPorcentil);
+
+  // Mostrar resumen final
+  document.getElementById('neto-final').textContent = formatear(neto) + ' CUP';
+  document.getElementById('resultado').classList.remove('oculto');
+}
+</script>
+
+</body>
+</html>
